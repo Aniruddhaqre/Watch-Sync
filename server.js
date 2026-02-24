@@ -91,12 +91,11 @@ function handleJoin(ws, roomId) {
     console.log(`User joined [${roomId}]. Users in room: ${roomUsers.length}`);
 
     // WEBRTC TRIGGER: If room is full, tell clients they can start the WebRTC handshake
+   // WEBRTC TRIGGER: Tell ONLY the second user to initiate the call to avoid collisions
     if (roomUsers.length === 2) {
-        roomUsers.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify({ type: "ready" }));
-            }
-        });
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ready" }));
+        }
     }
 }
 
